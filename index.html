@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0d0f">
+    <meta name="description" content="KABBO Studio — বাংলায় সোশ্যাল কার্ড ডিজাইন করার সহজ টুল।">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="KABBO Studio — News Card Maker">
+    <meta property="og:description" content="আপনার গল্প, আপনার স্টাইল। KABBO-তে তৈরি করুন প্রকাশযোগ্য নিউজ কার্ড।">
+    <meta property="og:image" content="preview.png">
+    <title>KABBO Studio — News Card Maker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Baloo+Da+2:wght@400;500;600;700&family=Mina:wght@400;700&family=Galada&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Lato:wght@400;700&family=Montserrat:wght@400;600;700&family=Oswald:wght@400;500;700&family=Lora:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <button id="toggleSettings" class="mobile-toggle" aria-label="Open settings">
+            <span class="icon">☷</span> ডিজাইন এডিট করুন
+        </button>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a class="brand" href="./" aria-label="KABBO Studio home">
+                    <span class="brand-mark">ক</span>
+                    <span><strong>KABBO</strong><small>STUDIO / 01</small></span>
+                </a>
+                <div class="header-actions">
+                    <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle dark mode">
+                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                    <button id="closeSettings" class="close-btn mobile-only" aria-label="Close settings">×</button>
+                </div>
+            </div>
+
+            <div class="studio-intro">
+                <div class="eyebrow"><span></span> VISUAL PUBLISHING TOOL</div>
+                <h1>আপনার গল্প,<br><em>আপনার স্টাইল।</em></h1>
+                <p>এক মিনিটে তৈরি করুন সোশ্যাল-রেডি নিউজ কার্ড।</p>
+            </div>
+
+            <div class="controls">
+                <div class="control-group template-picker">
+                    <label for="templateSelect">লেআউট বেছে নিন <span>STEP 01</span></label>
+                    <select id="templateSelect"></select>
+                    <p id="templateDesc" class="help-text"></p>
+                </div>
+
+                <div class="section-title"><span>01</span> স্টোরি</div>
+                <div id="dynamicContent"></div>
+
+                <div class="section-title"><span>02</span> ভিজ্যুয়াল</div>
+                <div class="control-group upload-group">
+                    <label for="imageInput">প্রধান ছবি</label>
+                    <input type="file" id="imageInput" accept="image/*">
+                    <div class="or-divider"><span>অথবা URL দিন</span></div>
+                    <input type="text" id="imageUrlInput" placeholder="https://...">
+                    <div class="image-controls">
+                        <div class="range-label"><label for="imageScaleInput">ছবির স্কেল</label><output id="scaleOutput">100%</output></div>
+                        <input type="range" id="imageScaleInput" min="0.1" max="3" step="0.1" value="1">
+                        <div class="mini-fields"><label>POS X<input type="number" id="imageXInput" value="0"></label><label>POS Y<input type="number" id="imageYInput" value="0"></label></div>
+                        <label for="imageObjectFitInput" class="sr-only">Image fit</label>
+                        <select id="imageObjectFitInput"><option value="cover">COVER — পূর্ণ ফ্রেম</option><option value="contain">CONTAIN — পুরো ছবি</option><option value="fill">FILL — ফিট করুন</option></select>
+                    </div>
+                </div>
+                <div class="control-group"><label for="logoInput">লোগো <span class="optional-label">ঐচ্ছিক · আপলোড করলেই বসবে</span></label><input type="file" id="logoInput" accept="image/*"><input type="text" id="logoUrlInput" placeholder="লোগো URL"></div>
+
+                <div class="section-title"><span>03</span> লুক & ফিল</div>
+                <div class="control-group"><div class="label-row"><label for="fontInput">ফন্ট</label><button id="loadSystemFontsBtn" class="text-btn" style="display:none">ইনস্টলড ফন্ট</button></div><select id="fontInput"></select></div>
+                <div class="color-grid"><label>অ্যাকসেন্ট<input type="color" id="accentColorInput" value="#c9f31d"></label><label>ব্যাকগ্রাউন্ড<input type="color" id="bgColorInput" value="#ffffff"></label><label>টেক্সট<input type="color" id="textColorInput" value="#111827"></label></div>
+            </div>
+
+            <div class="actions"><button id="resetBtn" class="secondary-btn">রিসেট</button><button id="downloadBtn" class="primary-btn"><span>কার্ড এক্সপোর্ট করুন</span><b>↗</b></button></div>
+            <div class="footer-credit"><span>POWERED BY</span><strong>KABBO</strong><span class="separator">•</span><a href="https://github.com/islamsaimun9298-tech/kabbo-studio" target="_blank" rel="noopener noreferrer">OPEN SOURCE ↗</a></div>
+        </aside>
+
+        <main class="preview-area">
+            <div class="preview-topbar"><span class="live-dot"></span><span>লাইভ প্রিভিউ</span><span class="topbar-line"></span><code>1080 × 1080 PX</code></div>
+            <div class="canvas-wrapper"><div id="renderTarget"></div></div>
+            <div class="zoom-controls"><span class="zoom-hint">প্রিভিউ স্ক্রিনে ফিট করা হয়েছে · আউটপুট 1080×1080</span><span class="kbd">⌘ E</span></div>
+        </main>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
