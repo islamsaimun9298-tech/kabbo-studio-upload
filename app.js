@@ -203,7 +203,7 @@ function init() {
     elements.imageX.value = state.imageX || 0;
     elements.imageObjectFit.value = state.imageObjectFit || 'cover';
     elements.imageY.value = state.imageY || 0;
-    if (state.logo && !state.logo.startsWith('data:')) elements.logoUrl.value = state.logo;
+    if (elements.logoUrl && state.logo && !state.logo.startsWith('data:')) elements.logoUrl.value = state.logo;
 
     // Listeners
     elements.templateSelect.addEventListener('change', (e) => {
@@ -246,8 +246,8 @@ function init() {
     
     elements.image.addEventListener('change', handleImageUpload.bind(null, 'image'));
     elements.imageUrl.addEventListener('input', (e) => { state.image = e.target.value; saveState(); render(); });
-    elements.logo.addEventListener('change', handleImageUpload.bind(null, 'logo'));
-    elements.logoUrl.addEventListener('input', (e) => { state.logo = e.target.value; saveState(); render(); });
+    if (elements.logo) elements.logo.addEventListener('change', handleImageUpload.bind(null, 'logo'));
+    if (elements.logoUrl) elements.logoUrl.addEventListener('input', (e) => { state.logo = e.target.value; saveState(); render(); });
 
     elements.downloadBtn.addEventListener('click', downloadImage);
     elements.resetBtn.addEventListener('click', resetState);
@@ -641,7 +641,7 @@ function render() {
 
     // Apply Image Transforms
     const mainImg = elements.renderTarget.querySelector(
-        '.main-photo, .editorial-image, .broadcast-image, .exact-upload-image'
+        '.basic-image, .sb1-image, .sb2-image, .main-photo, .editorial-image, .broadcast-image, .exact-upload-image'
     );
     if (mainImg) {
         mainImg.style.transform = `scale(${state.imageScale || 1}) translate(${state.imageX || 0}px, ${state.imageY || 0}px)`;
@@ -801,8 +801,8 @@ function downloadImage() {
                     useCORS: true,
                     backgroundColor: null,
                     logging: false,
-                    width: 1080,
-                    height: 1080
+                    width: canvasWidth,
+                    height: canvasHeight
                 }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = `kabbo-${state.templateId}-${Date.now()}.png`;
