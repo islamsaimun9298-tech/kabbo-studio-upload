@@ -53,6 +53,8 @@ const defaultState = {
     templateId: 'classic',
     heading: 'শিরোনাম লিখুন',
     subheading: 'বিস্তারিত বর্ণনা যোগ করুন',
+    headingSize: 48,
+    subheadingSize: 28,
     date: '19 সেপ্টেম্বর 2026',
     domain: 'www.sobarkotha.com',
     facebook: 'yourpage',
@@ -114,6 +116,11 @@ function loadState() {
             if (!templates.some(template => template.id === state.templateId)) {
                 state.templateId = defaultState.templateId;
             }
+            const savedTemplate = templates.find(template => template.id === state.templateId);
+            if (savedTemplate?.defaults) {
+                if (!Object.prototype.hasOwnProperty.call(parsed, 'headingSize')) state.headingSize = savedTemplate.defaults.headingSize;
+                if (!Object.prototype.hasOwnProperty.call(parsed, 'subheadingSize')) state.subheadingSize = savedTemplate.defaults.subheadingSize;
+            }
         } else {
             // No saved state - merge template defaults into defaultState
             const template = templates.find(t => t.id === state.templateId);
@@ -132,7 +139,7 @@ function resetState() {
         window.location.reload();
     }
 }
-const SYSTEM_FIELDS = ['image', 'imageScale', 'imageX', 'imageY', 'imageObjectFit', 'logo', 'font', 'accentColor', 'bgColor', 'textColor'];
+const SYSTEM_FIELDS = ['image', 'imageScale', 'imageX', 'imageY', 'imageObjectFit', 'logo', 'font', 'accentColor', 'bgColor', 'textColor', 'headingSize', 'subheadingSize'];
 
 const elements = {
     templateSelect: document.getElementById('templateSelect'),
@@ -144,6 +151,10 @@ const elements = {
     imageX: document.getElementById('imageXInput'),
     imageY: document.getElementById('imageYInput'),
     imageObjectFit: document.getElementById('imageObjectFitInput'),
+    headingSize: document.getElementById('headingSizeInput'),
+    subheadingSize: document.getElementById('subheadingSizeInput'),
+    headingSizeOutput: document.getElementById('headingSizeOutput'),
+    subheadingSizeOutput: document.getElementById('subheadingSizeOutput'),
     logo: document.getElementById('logoInput'),
     logoUrl: document.getElementById('logoUrlInput'),
     font: document.getElementById('fontInput'),
@@ -203,6 +214,10 @@ function init() {
     elements.imageX.value = state.imageX || 0;
     elements.imageObjectFit.value = state.imageObjectFit || 'cover';
     elements.imageY.value = state.imageY || 0;
+    elements.headingSize.value = state.headingSize || 48;
+    elements.subheadingSize.value = state.subheadingSize || 28;
+    elements.headingSizeOutput.value = `${state.headingSize || 48}px`;
+    elements.subheadingSizeOutput.value = `${state.subheadingSize || 28}px`;
     if (elements.logoUrl && state.logo && !state.logo.startsWith('data:')) elements.logoUrl.value = state.logo;
 
     // Listeners
@@ -243,6 +258,8 @@ function init() {
     elements.imageObjectFit.addEventListener('change', (e) => { state.imageObjectFit = e.target.value; saveState(); render(); });
     elements.imageX.addEventListener('input', (e) => { state.imageX = parseInt(e.target.value); saveState(); render(); });
     elements.imageY.addEventListener('input', (e) => { state.imageY = parseInt(e.target.value); saveState(); render(); });
+    elements.headingSize.addEventListener('input', (e) => { state.headingSize = parseInt(e.target.value); elements.headingSizeOutput.value = `${state.headingSize}px`; saveState(); render(); });
+    elements.subheadingSize.addEventListener('input', (e) => { state.subheadingSize = parseInt(e.target.value); elements.subheadingSizeOutput.value = `${state.subheadingSize}px`; saveState(); render(); });
     
     elements.image.addEventListener('change', handleImageUpload.bind(null, 'image'));
     elements.imageUrl.addEventListener('input', (e) => { state.image = e.target.value; saveState(); render(); });
@@ -610,6 +627,8 @@ function render() {
     html = html.replace(/{accentColor}/g, state.accentColor);
     html = html.replace(/{bgColor}/g, state.bgColor);
     html = html.replace(/{textColor}/g, state.textColor);
+    html = html.replace(/{headingSize}/g, String(state.headingSize || 48));
+    html = html.replace(/{subheadingSize}/g, String(state.subheadingSize || 28));
     
     // Placeholder images
     const placeholderImg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgZmlsbD0iI2YzZjRmNiI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiLz48dGV4dCB4PSI1MCIgeT0iNTAiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5Y2EzYWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0Ij5JTUFHRTwvdGV4dD48L3N2Zz4=';
